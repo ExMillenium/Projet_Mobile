@@ -1,0 +1,38 @@
+CREATE TABLE STUDENTS (
+  INE varchar(11) primary key not null,
+  Fname varchar(30) not null,
+  Lname varchar(30) not null,
+  Gender varchar(1) not null,
+  Email varchar(255) not null,
+  PhoneNumber (20) not null
+);
+
+CREATE TABLE LEVEL (
+idLevel INT PRIMARY KEY AUTO_INCREMENT,
+label VARCHAR(2) NOT NULL
+);
+
+CREATE TABLE CLASSES (
+idClass VARCHAR(7) PRIMARY KEY,
+ClassName VARCHAR(18) NOT NULL,
+Curriculum VARCHAR(5) NOT NULL,
+idLevel INT NOT NULL,
+StartYear SMALLINT NOT NULL,
+EndYear SMALLINT NOT NULL,
+
+FOREIGN KEY (idLevel)
+REFERENCES LEVEL(idLevel)
+);
+
+CREATE TABLE ENROLL (
+INE varchar(11) NOT NULL,
+idCourse int NOT NULL,
+Enrolldate DATE NOT NULL,
+end_date DATE NOT NULL,
+status varchar(10) not null,
+
+PRIMARY KEY (INE, idCourse),
+FOREIGN KEY (INE) REFERENCES STUDENTS(INE),
+PRIMARY KEY (idCourse),
+FOREIGN KEY (idCourse) REFERENCES COURSES(idCourse)
+)
