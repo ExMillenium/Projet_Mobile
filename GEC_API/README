@@ -1,0 +1,171 @@
+## 📌 **Description**
+L’API GEC est une API REST développée en PHP (sans framework) permettant de gérer :
+
+- les étudiants  
+- les classes  
+- les inscriptions (enrollments)  
+
+Elle utilise une architecture MVC légère, un routeur maison, et une base MySQL (locale ou AlwaysData).
+
+---
+
+## 🏗️ **Structure du projet**
+
+```
+GEC_API/
+│
+├── public/
+│   ├── index.php        # Point d’entrée de l’API
+│
+├── src/
+│   ├── Core/
+│   │   ├── Router.php   # Routeur minimaliste
+│   │   └── Database.php # Connexion MySQL
+│   │
+│   ├── Controllers/
+│   │   ├── StudentController.php
+│   │   └── ClassController.php
+│   │
+│   ├── Managers/
+│       ├── StudentManager.php
+│       └── ClassManager.php
+│
+├── vendor/              # Autoload Composer
+├── composer.json
+└── README.md
+```
+
+---
+
+## ⚙️ **Installation**
+
+### 1️⃣ Cloner le projet
+```bash
+git clone https://github.com/ton-repo/GEC_API.git
+cd GEC_API
+```
+
+### 2️⃣ Installer les dépendances
+```bash
+composer install
+```
+
+### 3️⃣ Configurer la base de données  
+Dans `src/Core/Database.php`, renseigner :
+
+```php
+private string $host = "xxxx";
+private string $dbname = "xxxx";
+private string $username = "xxxx";
+private string $password = "xxxx";
+```
+
+> 💡 En développement, utiliser une base locale.  
+> En production, utiliser AlwaysData.
+
+---
+
+## ▶️ **Lancer l’API**
+
+### 🔹 Serveur PHP intégré
+```bash
+php -S localhost:8000 -t public
+```
+
+L’API sera disponible sur :
+
+```
+http://localhost:8000
+```
+
+---
+
+## 📡 **Endpoints disponibles**
+
+### 🎓 **Étudiants**
+
+#### ➤ Récupérer tous les étudiants
+```
+GET /api/students
+```
+
+---
+
+### 🏫 **Classes**
+
+#### ➤ Récupérer toutes les classes
+```
+GET /api/classes
+```
+
+#### ➤ Récupérer les étudiants d’une classe
+```
+GET /api/classes/{idClass}/students
+```
+
+Exemple :
+```
+GET /api/classes/L3-2526/students
+```
+
+> ⚠️ Les IDs de classe sont alphanumériques (ex : `L3-2526`).
+
+---
+
+## 🧠 **Fonctionnement du routeur**
+
+Le routeur convertit les routes dynamiques :
+
+```
+/api/classes/{id}/students
+```
+
+en regex :
+
+```
+/api/classes/(?P<id>[\w\-]+)/students
+```
+
+Ce qui permet de récupérer l’ID dans `$params['id']`.
+
+---
+
+## 🗄️ **Base de données**
+
+### Tables utilisées :
+
+- `students`
+- `classes`
+- `enroll`
+
+### Exemple de relation :
+```
+students.INE  ←→  enroll.StudentINE
+classes.idClass ←→ enroll.ClassEnrolled
+```
+
+---
+
+## 🚀 **Déploiement sur AlwaysData**
+
+1. Uploader le projet dans `/www/`
+2. Pointer le domaine vers `/public/`
+3. Configurer la base MySQL AlwaysData
+4. Vérifier que l’accès distant est activé si nécessaire
+
+---
+
+## 🧪 **Tests**
+
+Utiliser Postman, Thunder Client ou un navigateur :
+
+```
+http://localhost:8000/api/students
+http://localhost:8000/api/classes
+http://localhost:8000/api/classes/L3-2526/students
+```
+
+---
+
+## 👨‍💻 **Auteur**
+API développé par **Markos**, étudiant en MIAGE.
