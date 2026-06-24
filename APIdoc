@@ -1,25 +1,31 @@
+# --- database schema for the student management system ---
 CREATE TABLE STUDENTS (
-  INE varchar(11) primary key not null,
+  INE varchar(11) not null,
   Fname varchar(30) not null,
   Lname varchar(30) not null,
   Gender varchar(1) not null,
   Email varchar(255) not null,
-  PhoneNumber (20) not null
+  PhoneNumber varchar(20) not null
+
+PRIMARY KEY (INE)
 );
 
 CREATE TABLE LEVEL (
-idLevel INT PRIMARY KEY AUTO_INCREMENT,
+idLevel INT AUTO_INCREMENT NOT NULL,
 label VARCHAR(2) NOT NULL
+
+PRIMARY KEY (idLevel)
 );
 
 CREATE TABLE CLASSES (
-idClass VARCHAR(7) PRIMARY KEY,
+idClass VARCHAR(7) NOT NULL,
 ClassName VARCHAR(18) NOT NULL,
 Curriculum VARCHAR(5) NOT NULL,
 idLevel INT NOT NULL,
 StartYear SMALLINT NOT NULL,
 EndYear SMALLINT NOT NULL,
 
+PRIMARY KEY (idClass),
 FOREIGN KEY (idLevel)
 REFERENCES LEVEL(idLevel)
 );

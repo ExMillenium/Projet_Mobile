@@ -35,18 +35,39 @@ class StudentUpdate(BaseModel):
     email: Optional[EmailStr] = None
     PhoneNumber: Optional[str] = None
 
+class Level(BaseModel):
+    idLevel: int
+    label: str
+
 class Classe(BaseModel):
     idClass: str
     ClassName: str
+    Curriculum: str
+    idLevel: int
+    StartYear: int
+    EndYear: int
 
 class ClasseUpdate(BaseModel):
-    ClassName: str
+    idClass: Optional[str] = None
+    ClassName: Optional[str] = None
+    Curriculum: Optional[str] = None
+    idLevel: Optional[int] = None
+    StartYear: Optional[int] = None
+    EndYear: Optional[int] = None
+
+class Enroll(BaseModel):
+    INE: str
+    idCourse: int
+    EnrollDate: str  # Format YYYY-MM-DD
+    end_Date: Optional[str] = None  # Format YYYY-MM-DD, peut être null si l'étudiant est encore inscrit
+    status: str  # "en cours", "terminé", "abandonné", etc.
 
 
 # --- DATA SIMULÉE (Base de données temporaire) ---
 db_students: List[Student] = []
 db_classes: List[Classe] = []
-
+db_levels: List[Level] = []
+db_enrolls: List[Enroll] = []
 
 # --- GESTION DES ÉTUDIANTS ---
 
@@ -68,7 +89,7 @@ def add_student(student: Student):
     """Ajouter un nouvel étudiant."""
     if any(s.INE == student.INE for s in db_students):
         raise HTTPException(status_code=400, detail="Un étudiant avec cet INE existe déjà.")
-    db_students.append(student)
+    db_students.append  (student)
     return student
 
 @app.put("/api/students/{student_id}", response_model=Student, tags=["Étudiants"])
