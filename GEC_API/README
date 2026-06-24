@@ -1,171 +1,148 @@
-## 📌 **Description**
-L’API GEC est une API REST développée en PHP (sans framework) permettant de gérer :
+📘 GEC API — Gestion des Étudiants, Classes et Inscriptions
+API REST en PHP (sans framework) — Architecture MVC légère
 
-- les étudiants  
-- les classes  
-- les inscriptions (enrollments)  
+📌 Présentation
+GEC API est une API REST développée en PHP sans framework, conçue pour gérer les données académiques d’un établissement :
 
-Elle utilise une architecture MVC légère, un routeur maison, et une base MySQL (locale ou AlwaysData).
+Étudiants
 
----
+Classes
 
-## 🏗️ **Structure du projet**
+Inscriptions (Enrollments)
 
-```
+L’application repose sur :
+
+une architecture MVC minimaliste,
+
+un routeur interne,
+
+une base MySQL (locale ou AlwaysData),
+
+un autoload Composer.
+
+L’objectif est de fournir une API simple, maintenable et facilement déployable.
+
+🏗️ Structure du projet
+Code
 GEC_API/
 │
 ├── public/
-│   ├── index.php        # Point d’entrée de l’API
+│   └── index.php              # Point d’entrée de l’API (router)
 │
 ├── src/
 │   ├── Core/
-│   │   ├── Router.php   # Routeur minimaliste
-│   │   └── Database.php # Connexion MySQL
+│   │   ├── Router.php         # Routeur minimaliste
+│   │   └── Database.php       # Connexion MySQL (PDO)
 │   │
 │   ├── Controllers/
 │   │   ├── StudentController.php
 │   │   └── ClassController.php
 │   │
 │   ├── Managers/
-│       ├── StudentManager.php
-│       └── ClassManager.php
+│   │   ├── StudentManager.php
+│   │   └── ClassManager.php
+│   │
+│   └── Models/                # (Optionnel selon implémentation)
 │
-├── vendor/              # Autoload Composer
+├── vendor/                    # Autoload Composer
 ├── composer.json
 └── README.md
-```
-
----
-
-## ⚙️ **Installation**
-
-### 1️⃣ Cloner le projet
-```bash
+⚙️ Installation
+1️⃣ Cloner le dépôt
+bash
 git clone https://github.com/ton-repo/GEC_API.git
 cd GEC_API
-```
-
-### 2️⃣ Installer les dépendances
-```bash
+2️⃣ Installer les dépendances
+bash
 composer install
-```
+3️⃣ Configurer la base de données
+Modifier les paramètres dans :
 
-### 3️⃣ Configurer la base de données  
-Dans `src/Core/Database.php`, renseigner :
-
-```php
+Code
+src/Core/Database.php
+php
 private string $host = "xxxx";
 private string $dbname = "xxxx";
 private string $username = "xxxx";
 private string $password = "xxxx";
-```
+En développement : base locale
+En production : base AlwaysData
 
-> 💡 En développement, utiliser une base locale.  
-> En production, utiliser AlwaysData.
-
----
-
-## ▶️ **Lancer l’API**
-
-### 🔹 Serveur PHP intégré
-```bash
+▶️ Lancer l’API
+Serveur PHP intégré
+bash
 php -S localhost:8000 -t public
-```
+API accessible à :
 
-L’API sera disponible sur :
-
-```
+Code
 http://localhost:8000
-```
-
----
-
-## 📡 **Endpoints disponibles**
-
-### 🎓 **Étudiants**
-
-#### ➤ Récupérer tous les étudiants
-```
+📡 Endpoints
+🎓 Étudiants
+Récupérer tous les étudiants
+Code
 GET /api/students
-```
-
----
-
-### 🏫 **Classes**
-
-#### ➤ Récupérer toutes les classes
-```
+🏫 Classes
+Récupérer toutes les classes
+Code
 GET /api/classes
-```
-
-#### ➤ Récupérer les étudiants d’une classe
-```
+Récupérer les étudiants d’une classe
+Code
 GET /api/classes/{idClass}/students
-```
-
 Exemple :
-```
+
+Code
 GET /api/classes/L3-2526/students
-```
+Les identifiants de classe peuvent être alphanumériques.
 
-> ⚠️ Les IDs de classe sont alphanumériques (ex : `L3-2526`).
+🧠 Fonctionnement du routeur
+Le routeur convertit automatiquement les routes dynamiques :
 
----
-
-## 🧠 **Fonctionnement du routeur**
-
-Le routeur convertit les routes dynamiques :
-
-```
+Code
 /api/classes/{id}/students
-```
+en expressions régulières :
 
-en regex :
-
-```
+Code
 /api/classes/(?P<id>[\w\-]+)/students
-```
+Les paramètres capturés sont injectés dans le contrôleur via $params.
 
-Ce qui permet de récupérer l’ID dans `$params['id']`.
+🗄️ Base de données
+Tables utilisées
+students
 
----
+classes
 
-## 🗄️ **Base de données**
+enroll
 
-### Tables utilisées :
+Relations principales
+Code
+students.INE        ←→   enroll.StudentINE
+classes.idClass     ←→   enroll.ClassEnrolled
+🚀 Déploiement sur AlwaysData
+Déposer le projet dans /www/
 
-- `students`
-- `classes`
-- `enroll`
+Pointer le domaine vers /public/
 
-### Exemple de relation :
-```
-students.INE  ←→  enroll.StudentINE
-classes.idClass ←→ enroll.ClassEnrolled
-```
+Configurer la base MySQL AlwaysData
 
----
+Vérifier les accès distants si nécessaire
 
-## 🚀 **Déploiement sur AlwaysData**
+🧪 Tests
+Compatible avec :
 
-1. Uploader le projet dans `/www/`
-2. Pointer le domaine vers `/public/`
-3. Configurer la base MySQL AlwaysData
-4. Vérifier que l’accès distant est activé si nécessaire
+Postman
 
----
+Thunder Client
 
-## 🧪 **Tests**
+Curl
 
-Utiliser Postman, Thunder Client ou un navigateur :
+Navigateur (GET uniquement)
 
-```
+Exemples :
+
+Code
 http://localhost:8000/api/students
 http://localhost:8000/api/classes
 http://localhost:8000/api/classes/L3-2526/students
-```
-
----
-
-## 👨‍💻 **Auteur**
-API développé par **Markos**.
+👤 Auteur
+Développé par Markos  
+Développeur Backend
