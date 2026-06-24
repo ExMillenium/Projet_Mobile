@@ -1,0 +1,192 @@
+GEC — Gestion des Étudiants et des Classes
+Application MVC en PHP pour la gestion académique
+
+📝 Présentation
+GEC (Gestion des Étudiants et des Classes) est une application web développée en PHP suivant une architecture MVC.
+Elle permet de gérer efficacement :
+
+Les étudiants
+
+Les classes
+
+Les inscriptions (enrollments)
+
+L’historique scolaire d’un étudiant (timeline)
+
+Les statuts académiques (Actif, Terminé, Diplômé, etc.)
+
+Le projet est conçu pour être simple, maintenable et extensible, tout en respectant une logique métier stricte.
+
+🎯 Objectifs du projet
+Centraliser la gestion des étudiants et des classes
+
+Suivre l’évolution académique d’un étudiant
+
+Garantir la cohérence des statuts d’inscription
+
+Offrir une interface claire et intuitive
+
+Fournir une base solide pour des extensions futures (notes, bulletins, API, etc.)
+
+🏗️ Architecture
+Le projet suit une architecture MVC organisée comme suit :
+
+Code
+/app
+    /Controllers      → Logique métier
+    /Managers         → Accès à la base de données (PDO)
+    /Models           → Représentation des entités
+    /Views            → Interface utilisateur (Bootstrap)
+        /students
+        /classes
+        /enroll
+        /layout
+    /Core             → Connexion DB, autoload
+/public
+    index.php         → Front controller (router)
+🔧 Fonctionnalités
+👨‍🎓 Gestion des étudiants
+Création, modification, suppression
+
+Affichage détaillé d’un étudiant
+
+Timeline complète de ses inscriptions
+
+Informations personnelles (INE, nom, prénom, date de naissance, email)
+
+🏫 Gestion des classes
+Création, modification, suppression
+
+Liste des étudiants inscrits
+
+Informations sur le niveau et le nom de la classe
+
+📝 Gestion des inscriptions
+Inscription d’un étudiant dans une classe
+
+Modification des dates et du statut
+
+Suppression d’une inscription
+
+Règles métier intégrées :
+
+Une inscription nouvellement créée est toujours Actif
+
+Impossible de sélectionner Actif lors d’une modification
+
+Un étudiant ne peut pas avoir deux inscriptions Actif simultanément
+
+📊 Dashboard
+Nombre total d’étudiants
+
+Nombre total de classes
+
+Nombre total d’inscriptions
+
+🗄️ Base de données
+Tables principales
+students
+Champ	Type
+INE	VARCHAR(20)
+firstname	VARCHAR(50)
+lastname	VARCHAR(50)
+birthdate	DATE
+email	VARCHAR(100)
+
+
+classes
+Champ	Type
+idClass	INT
+ClassName	VARCHAR(100)
+Level	VARCHAR(50)
+
+
+enroll
+Champ	Type
+StudentINE	VARCHAR(20)
+ClassEnrolled	INT
+Enroll_date	DATE
+End_date	DATE
+statuts	VARCHAR(20)
+
+
+⚙️ Installation
+1️⃣ Cloner le projet
+bash
+git clone https://github.com/votre-repo/GEC.git
+2️⃣ Importer la base de données
+Importer le fichier SQL fourni :
+
+bash
+database.sql
+3️⃣ Configurer la connexion MySQL
+Dans :
+
+Code
+/app/Core/ConnectionDB.php
+Modifier :
+
+php
+$host = "localhost";
+$dbname = "gec";
+$username = "root";
+$password = "";
+4️⃣ Lancer le serveur PHP
+bash
+php -S localhost:8000 -t public
+Puis accéder à :
+
+Code
+http://localhost:8000
+🧠 Règles métier
+Une inscription créée = Actif automatiquement
+
+Lors d’une modification, Actif n’est jamais proposé
+
+Un étudiant ne peut pas être Actif dans deux classes simultanément
+
+La timeline affiche l’historique complet des inscriptions
+
+Les statuts disponibles :
+
+Terminé
+
+Diplômé
+
+Abandon
+
+Échec
+
+Transféré
+
+Exclu
+
+Suspendu
+
+🎨 Interface utilisateur
+Bootstrap 5
+
+Timeline verticale moderne
+
+Badges de statut
+
+Cartes et tableaux responsives
+
+Navigation claire et structurée
+
+🧰 Technologies utilisées
+PHP 8
+
+MySQL / MariaDB
+
+PDO
+
+Bootstrap 5
+
+HTML / CSS
+
+Architecture MVC
+
+👤 Auteur
+Markos  
+Développeur backend
