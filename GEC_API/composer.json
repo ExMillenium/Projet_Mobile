@@ -1,0 +1,15 @@
+{
+    "name": "markos/gec_api",
+    "description": "Clean PHP REST API for Students & Classes",
+    "type": "project",
+    "require": {
+        "php": ">=8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\": "src/Core/",
+            "Controllers\\": "src/Controllers/",
+            "Managers\\": "src/Managers/"
+        }
+    }
+}

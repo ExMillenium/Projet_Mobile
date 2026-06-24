@@ -1,0 +1,389 @@
+from fastapi import FastAPI, HTTPException, status, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, EmailStr
+from typing import List, Optional
+from datetime import date
+
+from sqlalchemy import Column, String, Integer, SmallInteger, Date, ForeignKey, create_engine
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker, Session
+
+# -------------------------------------------------------------------
+# CONFIG SQLALCHEMY
+# -------------------------------------------------------------------
+
+DATABASE_URL = "mysql+pymysql://progmob:M4root!1234%@mysql-progmob.alwaysdata.net:3307/progmob_bdd"
+
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+# -------------------------------------------------------------------
+# MODELES SQLALCHEMY (TABLES)
+# -------------------------------------------------------------------
+
+class StudentDB(Base):
+    __tablename__ = "STUDENTS"
+    
+    INE = Column(String(11), primary_key=True, index=True)
+    Fname = Column(String(30), nullable=False)
+    Lname = Column(String(30), nullable=False)
+    Gender = Column(String(1), nullable=False)
+    Email = Column(String(255), nullable=False)
+    PhoneNumber = Column(String(20), nullable=False)
+
+    # Affectation à une classe (optionnelle)
+    classe_id = Column(String(7), ForeignKey("CLASSES.idClass"), nullable=True)
+    classe = relationship("ClasseDB", back_populates="students")
+
+    enrollments = relationship("EnrollDB", back_populates="student")
+
+
+class LevelDB(Base):
+    __tablename__ = "LEVEL"
+    
+    idLevel = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    label = Column(String(2), nullable=False)
+    
+    classes = relationship("ClasseDB", back_populates="level")
+
+
+class ClasseDB(Base):
+    __tablename__ = "CLASSES"
+    
+    idClass = Column(String(7), primary_key=True, index=True)
+    ClassName = Column(String(18), nullable=False)
+    Curriculum = Column(String(5), nullable=False)
+    idLevel = Column(Integer, ForeignKey("LEVEL.idLevel"), nullable=False)
+    StartYear = Column(SmallInteger, nullable=False)
+    EndYear = Column(SmallInteger, nullable=False)
+    
+    level = relationship("LevelDB", back_populates="classes")
+    students = relationship("StudentDB", back_populates="classe")
+
+
+class CourseDB(Base):
+    __tablename__ = "COURSES"
+    
+    idCourse = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    CourseName = Column(String(50), nullable=False)
+    
+    enrollments = relationship("EnrollDB", back_populates="course")
+
+
+class EnrollDB(Base):
+    __tablename__ = "ENROLL"
+    
+    INE = Column(String(11), ForeignKey("STUDENTS.INE"), primary_key=True)
+    idCourse = Column(Integer, ForeignKey("COURSES.idCourse"), primary_key=True)
+    Enrolldate = Column(Date, nullable=False)
+    end_date = Column(Date, nullable=True)  # rendu nullable pour coller à ton besoin
+    status = Column(String(10), nullable=False)
+    
+    student = relationship("StudentDB", back_populates="enrollments")
+    course = relationship("CourseDB", back_populates="enrollments")
+
+
+# Création des tables
+Base.metadata.create_all(bind=engine)
+
+
+# -------------------------------------------------------------------
+# SCHEMAS PYDANTIC (ENTRÉE / SORTIE API)
+# -------------------------------------------------------------------
+
+# --- Étudiants ---
+
+class StudentBase(BaseModel):
+    INE: str
+    Fname: str
+    Lname: str
+    Gender: str
+    Email: EmailStr
+    PhoneNumber: str
+    classe_id: Optional[str] = None
+
+
+class StudentCreate(StudentBase):
+    pass
+
+
+class StudentUpdate(BaseModel):
+    Fname: Optional[str] = None
+    Lname: Optional[str] = None
+    Email: Optional[EmailStr] = None
+    PhoneNumber: Optional[str] = None
+    classe_id: Optional[str] = None
+
+
+class StudentRead(StudentBase):
+    class Config:
+        orm_mode = True
+
+
+# --- Levels ---
+
+class LevelBase(BaseModel):
+    idLevel: int
+    label: str
+
+
+class LevelCreate(BaseModel):
+    label: str
+
+
+class LevelRead(LevelBase):
+    class Config:
+        orm_mode = True
+
+
+# --- Classes ---
+
+class ClasseBase(BaseModel):
+    idClass: str
+    ClassName: str
+    Curriculum: str
+    idLevel: int
+    StartYear: int
+    EndYear: int
+
+
+class ClasseCreate(ClasseBase):
+    pass
+
+
+class ClasseUpdate(BaseModel):
+    ClassName: Optional[str] = None
+    Curriculum: Optional[str] = None
+    idLevel: Optional[int] = None
+    StartYear: Optional[int] = None
+    EndYear: Optional[int] = None
+
+
+class ClasseRead(ClasseBase):
+    class Config:
+        orm_mode = True
+
+
+# --- Enroll ---
+
+class EnrollBase(BaseModel):
+    INE: str
+    idCourse: int
+    Enrolldate: date
+    end_date: Optional[date] = None
+    status: str
+
+
+class EnrollCreate(EnrollBase):
+    pass
+
+
+class EnrollRead(EnrollBase):
+    class Config:
+        orm_mode = True
+
+
+# -------------------------------------------------------------------
+# FASTAPI APP
+# -------------------------------------------------------------------
+
+app = FastAPI(
+    title="API de Gestion Administrative Universitaire",
+    description="API complète pour la gestion des étudiants, des classes et des affectations.",
+    version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# -------------------------------------------------------------------
+# ENDPOINTS ÉTUDIANTS
+# -------------------------------------------------------------------
+
+@app.get("/api/students", response_model=List[StudentRead], tags=["Étudiants"])
+def get_all_students(db: Session = Depends(get_db)):
+    return db.query(StudentDB).all()
+
+
+@app.get("/api/students/{student_id}", response_model=StudentRead, tags=["Étudiants"])
+def get_student(student_id: str, db: Session = Depends(get_db)):
+    student = db.query(StudentDB).filter(StudentDB.INE == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Étudiant non trouvé.")
+    return student
+
+
+@app.post("/api/students", response_model=StudentRead, status_code=status.HTTP_201_CREATED, tags=["Étudiants"])
+def add_student(student: StudentCreate, db: Session = Depends(get_db)):
+    existing = db.query(StudentDB).filter(StudentDB.INE == student.INE).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Un étudiant avec cet INE existe déjà.")
+    db_student = StudentDB(**student.dict())
+    db.add(db_student)
+    db.commit()
+    db.refresh(db_student)
+    return db_student
+
+
+@app.put("/api/students/{student_id}", response_model=StudentRead, tags=["Étudiants"])
+def update_student(student_id: str, updated_data: StudentUpdate, db: Session = Depends(get_db)):
+    student = db.query(StudentDB).filter(StudentDB.INE == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Étudiant non trouvé.")
+    
+    for field, value in updated_data.dict(exclude_unset=True).items():
+        setattr(student, field, value)
+    
+    db.commit()
+    db.refresh(student)
+    return student
+
+
+@app.delete("/api/students/{student_id}", tags=["Étudiants"])
+def delete_student(student_id: str, db: Session = Depends(get_db)):
+    student = db.query(StudentDB).filter(StudentDB.INE == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Étudiant non trouvé.")
+    db.delete(student)
+    db.commit()
+    return {"message": f"L'étudiant {student_id} a été supprimé avec succès."}
+
+
+# -------------------------------------------------------------------
+# ENDPOINTS CLASSES
+# -------------------------------------------------------------------
+
+@app.get("/api/classes", response_model=List[ClasseRead], tags=["Classes"])
+def get_all_classes(db: Session = Depends(get_db)):
+    return db.query(ClasseDB).all()
+
+
+@app.post("/api/classes", response_model=ClasseRead, status_code=status.HTTP_201_CREATED, tags=["Classes"])
+def add_classe(classe: ClasseCreate, db: Session = Depends(get_db)):
+    existing = db.query(ClasseDB).filter(ClasseDB.idClass == classe.idClass).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Une classe avec cet ID existe déjà.")
+    db_classe = ClasseDB(**classe.dict())
+    db.add(db_classe)
+    db.commit()
+    db.refresh(db_classe)
+    return db_classe
+
+
+@app.put("/api/classes/{classe_id}", response_model=ClasseRead, tags=["Classes"])
+def update_classe(classe_id: str, updated_data: ClasseUpdate, db: Session = Depends(get_db)):
+    classe = db.query(ClasseDB).filter(ClasseDB.idClass == classe_id).first()
+    if not classe:
+        raise HTTPException(status_code=404, detail="Classe non trouvée.")
+    
+    for field, value in updated_data.dict(exclude_unset=True).items():
+        setattr(classe, field, value)
+    
+    db.commit()
+    db.refresh(classe)
+    return classe
+
+
+@app.delete("/api/classes/{classe_id}", tags=["Classes"])
+def delete_classe(classe_id: str, db: Session = Depends(get_db)):
+    classe = db.query(ClasseDB).filter(ClasseDB.idClass == classe_id).first()
+    if not classe:
+        raise HTTPException(status_code=404, detail="Classe non trouvée.")
+    
+    # Désaffecter les étudiants de cette classe
+    students = db.query(StudentDB).filter(StudentDB.classe_id == classe_id).all()
+    for s in students:
+        s.classe_id = None
+    
+    db.delete(classe)
+    db.commit()
+    return {"message": f"La classe {classe_id} a été supprimée avec succès."}
+
+
+# -------------------------------------------------------------------
+# ENDPOINTS AFFECTATIONS ÉTUDIANTS ↔ CLASSES
+# -------------------------------------------------------------------
+
+@app.post("/api/classes/{classe_id}/students/{student_id}", tags=["Affectations"])
+def assign_student_to_classe(classe_id: str, student_id: str, db: Session = Depends(get_db)):
+    classe = db.query(ClasseDB).filter(ClasseDB.idClass == classe_id).first()
+    if not classe:
+        raise HTTPException(status_code=404, detail="Classe non trouvée.")
+    
+    student = db.query(StudentDB).filter(StudentDB.INE == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Étudiant non trouvé.")
+    
+    student.classe_id = classe_id
+    db.commit()
+    return {"message": f"L'étudiant {student_id} a été affecté à la classe {classe_id}."}
+
+
+@app.delete("/api/classes/{classe_id}/students/{student_id}", tags=["Affectations"])
+def remove_student_from_classe(classe_id: str, student_id: str, db: Session = Depends(get_db)):
+    student = db.query(StudentDB).filter(StudentDB.INE == student_id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Étudiant non trouvé.")
+    
+    if student.classe_id != classe_id:
+        raise HTTPException(status_code=400, detail="L'étudiant n'est pas inscrit dans cette classe.")
+    
+    student.classe_id = None
+    db.commit()
+    return {"message": f"L'étudiant {student_id} a été retiré de la classe {classe_id}."}
+
+
+@app.get("/api/classes/{classe_id}/students", response_model=List[StudentRead], tags=["Affectations"])
+def get_students_from_classe(classe_id: str, db: Session = Depends(get_db)):
+    classe = db.query(ClasseDB).filter(ClasseDB.idClass == classe_id).first()
+    if not classe:
+        raise HTTPException(status_code=404, detail="Classe non trouvée.")
+    
+    students_in_classe = db.query(StudentDB).filter(StudentDB.classe_id == classe_id).all()
+    return students_in_classe
+
+
+# -------------------------------------------------------------------
+# ENDPOINTS ENROLL (optionnel, basique)
+# -------------------------------------------------------------------
+
+@app.post("/api/enrolls", response_model=EnrollRead, tags=["Inscriptions"])
+def add_enroll(enroll: EnrollCreate, db: Session = Depends(get_db)):
+    student = db.query(StudentDB).filter(StudentDB.INE == enroll.INE).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Étudiant non trouvé.")
+    
+    course = db.query(CourseDB).filter(CourseDB.idCourse == enroll.idCourse).first()
+    if not course:
+        raise HTTPException(status_code=404, detail="Cours non trouvé.")
+    
+    db_enroll = EnrollDB(**enroll.dict())
+    db.add(db_enroll)
+    db.commit()
+    db.refresh(db_enroll)
+    return db_enroll
+
+
+@app.get("/api/enrolls/{ine}", response_model=List[EnrollRead], tags=["Inscriptions"])
+def get_enrolls_for_student(ine: str, db: Session = Depends(get_db)):
+    enrolls = db.query(EnrollDB).filter(EnrollDB.INE == ine).all()
+    return enrolls
