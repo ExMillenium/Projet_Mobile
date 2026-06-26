@@ -1,0 +1,148 @@
+📘 GEC API — Gestion des Étudiants, Classes et Inscriptions
+API REST en PHP (sans framework) — Architecture MVC légère
+
+📌 Présentation
+GEC API est une API REST développée en PHP sans framework, conçue pour gérer les données académiques d’un établissement :
+
+Étudiants
+
+Classes
+
+Inscriptions (Enrollments)
+
+L’application repose sur :
+
+une architecture MVC minimaliste,
+
+un routeur interne,
+
+une base MySQL (locale ou AlwaysData),
+
+un autoload Composer.
+
+L’objectif est de fournir une API simple, maintenable et facilement déployable.
+
+🏗️ Structure du projet
+Code
+GEC_API/
+│
+├── public/
+│   └── index.php              # Point d’entrée de l’API (router)
+│
+├── src/
+│   ├── Core/
+│   │   ├── Router.php         # Routeur minimaliste
+│   │   └── Database.php       # Connexion MySQL (PDO)
+│   │
+│   ├── Controllers/
+│   │   ├── StudentController.php
+│   │   └── ClassController.php
+│   │
+│   ├── Managers/
+│   │   ├── StudentManager.php
+│   │   └── ClassManager.php
+│   │
+│   └── Models/                # (Optionnel selon implémentation)
+│
+├── vendor/                    # Autoload Composer
+├── composer.json
+└── README.md
+⚙️ Installation
+1️⃣ Cloner le dépôt
+bash
+git clone https://github.com/ton-repo/GEC_API.git
+cd GEC_API
+2️⃣ Installer les dépendances
+bash
+composer install
+3️⃣ Configurer la base de données
+Modifier les paramètres dans :
+
+Code
+src/Core/Database.php
+php
+private string $host = "xxxx";
+private string $dbname = "xxxx";
+private string $username = "xxxx";
+private string $password = "xxxx";
+En développement : base locale
+En production : base AlwaysData
+
+▶️ Lancer l’API
+Serveur PHP intégré
+bash
+php -S localhost:8000 -t public
+API accessible à :
+
+Code
+http://localhost:8000
+📡 Endpoints
+🎓 Étudiants
+Récupérer tous les étudiants
+Code
+GET /api/students
+🏫 Classes
+Récupérer toutes les classes
+Code
+GET /api/classes
+Récupérer les étudiants d’une classe
+Code
+GET /api/classes/{idClass}/students
+Exemple :
+
+Code
+GET /api/classes/L3-2526/students
+Les identifiants de classe peuvent être alphanumériques.
+
+🧠 Fonctionnement du routeur
+Le routeur convertit automatiquement les routes dynamiques :
+
+Code
+/api/classes/{id}/students
+en expressions régulières :
+
+Code
+/api/classes/(?P<id>[\w\-]+)/students
+Les paramètres capturés sont injectés dans le contrôleur via $params.
+
+🗄️ Base de données
+Tables utilisées
+students
+
+classes
+
+enroll
+
+Relations principales
+Code
+students.INE        ←→   enroll.StudentINE
+classes.idClass     ←→   enroll.ClassEnrolled
+🚀 Déploiement sur AlwaysData
+Déposer le projet dans /www/
+
+Pointer le domaine vers /public/
+
+Configurer la base MySQL AlwaysData
+
+Vérifier les accès distants si nécessaire
+
+🧪 Tests
+Compatible avec :
+
+Postman
+
+Thunder Client
+
+Curl
+
+Navigateur (GET uniquement)
+
+Exemples :
+
+Code
+http://localhost:8000/api/students
+http://localhost:8000/api/classes
+http://localhost:8000/api/classes/L3-2526/students
+👤 Auteur
+Développé par Markos  
+Développeur Backend
