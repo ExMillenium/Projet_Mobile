@@ -21,5 +21,3 @@ $router->get("/api/classes/{id}/students", fn($p) => (new StudentController($pdo
 $router->get("/api/classes", fn() => (new ClassController($pdo))->getAll());
 
 $router->resolve($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
-
-exit;
