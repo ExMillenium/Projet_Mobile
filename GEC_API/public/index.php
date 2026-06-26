@@ -1,4 +1,6 @@
 <?php
+var_dump($_SERVER['REQUEST_URI']);
+exit;
 
 use Core\Database;
 use Core\Router;
