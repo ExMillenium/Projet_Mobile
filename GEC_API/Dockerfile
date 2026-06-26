@@ -1,6 +1,6 @@
 FROM php:8.2-cli
 
-# Installer les extensions nécessaires
+# Extensions nécessaires
 RUN docker-php-ext-install pdo pdo_mysql
 
 # Copier le code
@@ -14,5 +14,5 @@ RUN composer install --no-dev --optimize-autoloader
 # Exposer le port Render
 EXPOSE 10000
 
-# Lancer ton API via index.php dans /public
+# Lancer ton API depuis index.php à la racine
 CMD ["php", "-S", "0.0.0.0:10000", "index.php"]
