@@ -31,6 +31,13 @@ class Router
 
         $uri = explode("?", $uri)[0];
 
+        // Supprime les slashs finaux
+        $uri = rtrim($uri, "/");
+
+        // Si l'URI est vide, on met "/"
+        if ($uri === "") {
+            $uri = "/";
+        }
         if (!isset($this->routes[$method])) {
             http_response_code(405);
             echo json_encode(["error" => "Method not allowed"]);
