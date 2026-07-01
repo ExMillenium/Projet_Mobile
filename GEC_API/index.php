@@ -4,6 +4,7 @@ use Core\Database;
 use Core\Router;
 use Controllers\StudentController;
 use Controllers\ClassController;
+use Controllers\EnrollController;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -19,5 +20,8 @@ $router->get("/api/classes/{id}/students", fn($p) => (new StudentController($pdo
 
 // Classes
 $router->get("/api/classes", fn() => (new ClassController($pdo))->getAll());
+
+// Enrollments
+$router->get("/api/enrollments", fn() => (new EnrollController($pdo))->getAll());
 
 $router->resolve($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
