@@ -1,173 +1,66 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { useContext } from "react";
 import { AuthProvider, AuthContext } from "./context/AuthContext";
-// import LoginForm from './components/auth/LoginForm';
-// import Dashboard from './components/dashboard/Dashboard';
-// import Timetable from './components/timetable/Timetable';
-//import Grades from './components/grades/Grades';
-// import Messages from './components/messages/Messages';
-
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/hero.png";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 
-const PrivateRoute = ({ children }: { children: JSX.Element }) => {
-  const ctx = React.useContext(AuthContext);
-  if (!ctx) return <Navigate to="/login" />;
-  return ctx.user ? children : <Navigate to="/login" />;
+import LoginForm from "./pages/LoginForm";
+import Dashboard from "./pages/Dashboard";
+import Timetable from "./pages/Timetable";
+import Grades from "./pages/Grades";
+import Messages from "./pages/Messages";
+
+const PrivateRoute = ({ children }) => {
+  const ctx = useContext(AuthContext);
+
+  if (!ctx) return <Navigate to="/login" replace />;
+  return ctx.user ? children : <Navigate to="/login" replace />;
 };
 
 function App() {
   return (
-    <div>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/login" element={<LoginForm />} />
-            <Route
-              path="/"
-              element={
-                <PrivateRoute>
-                  <Dashboard />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/timetable"
-              element={
-                <PrivateRoute>
-                  <Timetable />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/grades"
-              element={
-                <PrivateRoute>
-                  <Grades />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/messages"
-              element={
-                <PrivateRoute>
-                  <Messages />
-                </PrivateRoute>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginForm />} />
 
-      <div className="ticks"></div>
+          <Route
+            path="/"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <Route
+            path="/timetable"
+            element={
+              <PrivateRoute>
+                <Timetable />
+              </PrivateRoute>
+            }
+          />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </div>
+          <Route
+            path="/grades"
+            element={
+              <PrivateRoute>
+                <Grades />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/messages"
+            element={
+              <PrivateRoute>
+                <Messages />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 

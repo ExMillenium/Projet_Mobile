@@ -1,0 +1,49 @@
+<?php require __DIR__ . "/../layout/header.php"; ?>
+
+<div class="card shadow-sm">
+    <div class="card-header text-white" style="background-color: var(--orange);">
+        <h4 class="mb-0">Modifier la Classe</h4>
+    </div>
+
+    <div class="card-body">
+
+        <form action="index.php?page=class_edit_submit" method="POST" class="row g-3">
+
+            <input type="hidden" name="idClass" value="<?= $class['idClass'] ?>">
+
+            <div class="col-md-6">
+                <label class="form-label">Nom de la Classe</label>
+                <input type="text" name="ClassName" class="form-control" value="<?= $class['ClassName'] ?>" required>
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Curriculum</label>
+                <input type="text" name="Curriculum" class="form-control" value="<?= $class['Curriculum'] ?>">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Niveau Académique</label>
+                <input type="text" name="idLevel" class="form-control" value="<?= $class['idLevel'] ?>">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Année de Début</label>
+                <input type="number" name="StartYear" class="form-control" value="<?= $class['StartYear'] ?>">
+            </div>
+
+            <div class="col-md-6">
+                <label class="form-label">Année de Fin</label>
+                <input type="number" name="EndYear" class="form-control" value="<?= $class['EndYear'] ?>">
+            </div>
+
+            <div class="col-12 mt-3">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <a href="index.php?page=classes" class="btn btn-secondary">Annuler</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+<?php require __DIR__ . "/../layout/footer.php"; ?>

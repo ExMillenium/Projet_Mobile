@@ -1,0 +1,89 @@
+/* Navbar styling */
+.navbar-custom {
+    background-color: var(--blue-dark);
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link {
+    color: white !important;
+    font-weight: 500;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--blue-light) !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--blue-mid);
+    border-color: var(--blue-mid);
+}
+
+.btn-primary:hover {
+    background-color: var(--blue-light);
+    border-color: var(--blue-light);
+}
+
+.btn-danger {
+    background-color: var(--red);
+    border-color: var(--red);
+}
+
+.btn-warning {
+    background-color: var(--orange);
+    border-color: var(--orange);
+}
+
+/* Table styling */
+.table thead {
+    background-color: var(--blue-dark);
+    color: white;
+}
+
+.table-hover tbody tr:hover {
+    background-color: var(--cyan);
+    color: white;
+}
+
+.timeline {
+    list-style: none;
+    padding-left: 0;
+    position: relative;
+    margin-left: 20px;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--blue-mid);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 25px;
+    padding-left: 20px;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -7px;
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    background: var(--blue-mid);
+    border-radius: 50%;
+}
+
+.timeline-date {
+    font-weight: bold;
+    color: var(--blue-mid);
+}
+
+.timeline-content {
+    margin-top: 5px;
+}
