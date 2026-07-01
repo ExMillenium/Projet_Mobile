@@ -2,7 +2,7 @@
 
 <div class="card shadow-sm">
     <div class="card-header text-white" style="background-color: var(--blue-dark);">
-        <h4 class="mb-0">Student Details</h4>
+        <h4 class="mb-0">Détails de l'Étudiant</h4>
     </div>
 
     <div class="card-body">
