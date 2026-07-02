@@ -7,12 +7,11 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th>Student</th>
-            <th>Class</th>
-            <th>Enroll Date</th>
-            <th>End Date</th>
-            <th>Status</th>
-            <th></th>
+            <th>Etudiant</th>
+            <th>Classe</th>
+            <th>Date d'Inscription</th>
+            <th>Date de Fin</th>
+            <th>Statut</th>
         </tr>
     </thead>
 
@@ -30,7 +29,7 @@
 
 
                 <a href="index.php?page=enroll_delete&ine=<?= $e['StudentINE'] ?>&class=<?= $e['ClassEnrolled'] ?>" 
-                   class="btn btn-danger btn-sm">Remove</a>
+                   class="btn btn-danger btn-sm">Supprimer</a>
             </td>
         </tr>
     <?php endforeach; ?>

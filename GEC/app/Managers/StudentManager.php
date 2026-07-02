@@ -33,10 +33,11 @@ class StudentManager
                 S.INE,
                 S.Fname,
                 S.Lname,
-                S.Birthdate,
-                S.Gender,
+                S.Sexe,
+                S.email_initial,
+                S.univ_email,
                 S.PhoneNumber,
-                S.Email
+                S.Birthdate
             FROM students S
             INNER JOIN enroll E ON E.StudentINE = S.INE
             INNER JOIN classes C ON C.idClass = E.ClassEnrolled

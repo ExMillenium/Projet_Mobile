@@ -6,10 +6,10 @@
 
 <table border="1" cellpadding="8">
     <tr>
-        <th>INE</th>
-        <th>Name</th>
+        <th>Identifiant National Etudiant (INE)</th>
+        <th>Prénom et Nom</th>
         <th>Email</th>
-        <th>Phone</th>
+        <th>Numéro de Téléphone</th>
         <th>Actions</th>
     </tr>
 

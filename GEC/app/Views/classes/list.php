@@ -8,11 +8,11 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Name</th>
+            <th>Nom</th>
             <th>Curriculum</th>
-            <th>Level</th>
-            <th>Start</th>
-            <th>End</th>
+            <th>Niveau</th>
+            <th>Début</th>
+            <th>Fin</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -27,9 +27,8 @@
             <td><?= $c['StartYear'] ?></td>
             <td><?= $c['EndYear'] ?></td>
             <td>
-                <a href="index.php?page=class_show&id=<?= $c['idClass'] ?>" class="btn btn-warning btn-sm">View</a>
-                <a href="index.php?page=class_edit&id=<?= $c['idClass'] ?>" class="btn btn-primary btn-sm">Edit</a>
-                <a href="index.php?page=class_delete&id=<?= $c['idClass'] ?>" class="btn btn-danger btn-sm">Delete</a>
+                <a href="index.php?page=class_show&id=<?= $c['idClass'] ?>" class="btn btn-warning btn-sm">Voir</a>
+                <!-- <a href="index.php?page=class_edit&id=<?= $c['idClass'] ?>" class="btn btn-primary btn-sm">Modifier</a> -->
             </td>
         </tr>
     <?php endforeach; ?>

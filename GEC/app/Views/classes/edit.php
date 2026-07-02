@@ -2,7 +2,7 @@
 
 <div class="card shadow-sm">
     <div class="card-header text-white" style="background-color: var(--orange);">
-        <h4 class="mb-0">Edit Class</h4>
+        <h4 class="mb-0">Modifier la Classe</h4>
     </div>
 
     <div class="card-body">
@@ -12,7 +12,7 @@
             <input type="hidden" name="idClass" value="<?= $class['idClass'] ?>">
 
             <div class="col-md-6">
-                <label class="form-label">Class Name</label>
+                <label class="form-label">Nom de la Classe</label>
                 <input type="text" name="ClassName" class="form-control" value="<?= $class['ClassName'] ?>" required>
             </div>
 
@@ -22,23 +22,23 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Level</label>
+                <label class="form-label">Niveau Académique</label>
                 <input type="text" name="idLevel" class="form-control" value="<?= $class['idLevel'] ?>">
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Start Year</label>
+                <label class="form-label">Année de Début</label>
                 <input type="number" name="StartYear" class="form-control" value="<?= $class['StartYear'] ?>">
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">End Year</label>
+                <label class="form-label">Année de Fin</label>
                 <input type="number" name="EndYear" class="form-control" value="<?= $class['EndYear'] ?>">
             </div>
 
             <div class="col-12 mt-3">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="index.php?page=classes" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <a href="index.php?page=classes" class="btn btn-secondary">Annuler</a>
             </div>
 
         </form>
