@@ -1,8 +1,8 @@
 <?php require __DIR__ . "/../layout/header.php"; ?>
 
-<h1 class="mb-4">Enrollments</h1>
+<h1 class="mb-4">Inscriptions</h1>
 
-<a href="index.php?page=enroll_add" class="btn btn-primary mb-3">Enroll Student</a>
+<a href="index.php?page=enroll_add" class="btn btn-primary mb-3">Inscrire un Étudiant</a>
 
 <table class="table table-hover">
     <thead>

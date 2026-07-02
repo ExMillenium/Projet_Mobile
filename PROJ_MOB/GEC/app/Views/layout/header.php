@@ -27,7 +27,7 @@
             <ul class="navbar-nav ms-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=students">Students</a>
+                    <a class="nav-link" href="index.php?page=students">Étudiants</a>
                 </li>
 
                 <li class="nav-item">
@@ -35,7 +35,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?page=enroll">Enrollments</a>
+                    <a class="nav-link" href="index.php?page=enroll">Inscriptions</a>
                 </li>
 
             </ul>

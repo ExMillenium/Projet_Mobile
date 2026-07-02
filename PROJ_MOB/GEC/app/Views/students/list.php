@@ -1,9 +1,8 @@
 <?php require __DIR__ . "/../layout/header.php"; ?>
 
-<h1>Students</h1>
-
-<a href="index.php?page=student_add">Add Student</a>
-
+<h1>Étudiants</h1>
+<h2><button href="index.php?page=student_add" class="btn btn-primary">Ajouter un Étudiant</button></h2>
+<br/>
 <table border="1" cellpadding="8">
     <tr>
         <th>Identifiant National Etudiant (INE)</th>
@@ -20,9 +19,11 @@
             <td><?= $s['Email'] ?></td>
             <td><?= $s['PhoneNumber'] ?></td>
             <td>
-                <a href="index.php?page=student_show&ine=<?= $s['INE'] ?>">View</a>
-                <a href="index.php?page=student_edit&ine=<?= $s['INE'] ?>">Edit</a>
-                <a href="index.php?page=student_delete&ine=<?= $s['INE'] ?>">Delete</a>
+                <button href="index.php?page=student_show&ine=<?= $s['INE'] ?>" class="btn btn-info btn-sm">View</button>
+                <br/>
+                <button href="index.php?page=student_edit&ine=<?= $s['INE'] ?>" class="btn btn-warning btn-sm">Edit</button>
+                <br/>
+                <button href="index.php?page=student_delete&ine=<?= $s['INE'] ?>" class="btn btn-danger btn-sm">Delete</button>
             </td>
         </tr>
     <?php endforeach; ?>

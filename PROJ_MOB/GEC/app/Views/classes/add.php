@@ -30,13 +30,16 @@
             </div>
 
             <div class="col-md-6">
-                <label class="form-label">Année de Début</label>
-                <input type="number" name="StartYear" class="form-control">
-            </div>
-
-            <div class="col-md-6">
-                <label class="form-label">Année de Fin</label>
-                <input type="number" name="EndYear" class="form-control">
+                <label class="form-label">Année Universitaire</label>
+                <select name="StartYear" class="form-control" required>
+                    <option value="" selected disabled></option>
+                    <?php
+                    $currentYear = date("Y");
+                    for ($y = 2014; $y <= $currentYear + 1; $y++) {
+                        echo "<option value='$y-" . ($y + 1) . "'>$y-" . ($y + 1) . "</option>";
+                    }
+                    ?>
+                </select>
             </div>
 
             <div class="col-12 mt-3">
